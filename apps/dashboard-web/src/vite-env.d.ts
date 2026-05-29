@@ -9,6 +9,12 @@ interface ImportMetaEnv {
   readonly VITE_STRIPE_PUBLISHABLE_KEY?: string
   readonly VITE_EVOLUTION_API_BASE_URL?: string
   readonly VITE_EVOLUTION_API_KEY?: string
+  readonly VITE_EVOLUTION_API_URL?: string
+  readonly VITE_META_APP_ID?: string
+  readonly VITE_META_APP_SECRET?: string
+  readonly VITE_META_VERIFY_TOKEN?: string
+  readonly VITE_SUPABASE_URL?: string
+  readonly VITE_SUPABASE_ANON_KEY?: string
 }
 
 interface ImportMeta {

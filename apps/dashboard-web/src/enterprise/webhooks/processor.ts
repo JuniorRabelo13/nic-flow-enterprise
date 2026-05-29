@@ -8,6 +8,10 @@ export type WebhookEnvelope<TPayload = unknown> = {
 }
 
 export const processWebhookEnvelope = async <TPayload>(envelope: WebhookEnvelope<TPayload>) => {
+  if (!envelope.signature) {
+    throw new Error('Webhook signature is required')
+  }
+
   await eventBus.emit({
     ...envelope.event,
     type: `${envelope.provider}.${envelope.event.type}`,

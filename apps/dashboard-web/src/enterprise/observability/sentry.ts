@@ -23,18 +23,27 @@ const postToSentry = (event: SentryEvent) => {
     return
   }
 
-  const dsn = new URL(enterpriseEnv.sentryDsn)
+  let dsn: URL
+  try {
+    dsn = new URL(enterpriseEnv.sentryDsn)
+  } catch {
+    logger.warn('sentry_invalid_dsn')
+    return
+  }
+
   const header = JSON.stringify({ dsn: enterpriseEnv.sentryDsn, sent_at: new Date().toISOString() })
   const item = JSON.stringify({ type: 'event' })
   const body = `${header}\n${item}\n${JSON.stringify(event)}`
 
-  navigator.sendBeacon?.(sentryEnvelopeEndpoint(enterpriseEnv.sentryDsn), new Blob([body], { type: 'application/x-sentry-envelope' })) ||
-    fetch(sentryEnvelopeEndpoint(enterpriseEnv.sentryDsn), {
+  const sent = navigator.sendBeacon?.(sentryEnvelopeEndpoint(enterpriseEnv.sentryDsn), new Blob([body], { type: 'application/x-sentry-envelope' }))
+  if (!sent) {
+    void fetch(sentryEnvelopeEndpoint(enterpriseEnv.sentryDsn), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-sentry-envelope', 'X-Sentry-Auth': `Sentry sentry_key=${dsn.username}` },
       body,
       keepalive: true,
     }).catch((error: unknown) => logger.warn('sentry_delivery_failed', { error }))
+  }
 }
 
 export const sentry = {

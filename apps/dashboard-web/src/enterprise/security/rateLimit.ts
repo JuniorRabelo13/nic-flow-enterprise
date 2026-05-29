@@ -4,6 +4,7 @@ type Bucket = {
 }
 
 export class TokenBucketRateLimiter {
+  private readonly maxBuckets = 1_000
   private buckets = new Map<string, Bucket>()
 
   constructor(
@@ -17,6 +18,13 @@ export class TokenBucketRateLimiter {
     const elapsed = (now - bucket.updatedAt) / 1000
     bucket.tokens = Math.min(this.capacity, bucket.tokens + elapsed * this.refillPerSecond)
     bucket.updatedAt = now
+
+    if (this.buckets.size >= this.maxBuckets && !this.buckets.has(key)) {
+      const oldestKey = this.buckets.keys().next().value
+      if (oldestKey) {
+        this.buckets.delete(oldestKey)
+      }
+    }
 
     if (bucket.tokens < tokens) {
       this.buckets.set(key, bucket)

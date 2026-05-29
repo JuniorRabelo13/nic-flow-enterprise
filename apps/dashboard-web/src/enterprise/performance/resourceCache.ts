@@ -4,6 +4,7 @@ type CacheEntry<T> = {
 }
 
 class ResourceCache {
+  private readonly maxEntries = 500
   private entries = new Map<string, CacheEntry<unknown>>()
 
   get<T>(key: string) {
@@ -17,6 +18,13 @@ class ResourceCache {
   }
 
   set<T>(key: string, value: T, ttlMs = 60_000) {
+    if (this.entries.size >= this.maxEntries) {
+      const oldestKey = this.entries.keys().next().value
+      if (oldestKey) {
+        this.entries.delete(oldestKey)
+      }
+    }
+
     this.entries.set(key, { value, expiresAt: Date.now() + ttlMs })
   }
 

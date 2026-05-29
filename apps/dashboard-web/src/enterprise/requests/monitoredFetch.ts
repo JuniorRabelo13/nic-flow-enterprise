@@ -21,12 +21,43 @@ const resolveUrl = (input: string | URL) => {
 
 const requestKey = (url: string, init: RequestInit) => `${init.method ?? 'GET'}:${url}:${init.body ?? ''}`
 
+const prepareBody = (body: BodyInit | null | undefined) => {
+  if (typeof body !== 'string') {
+    return body
+  }
+
+  try {
+    return JSON.stringify(sanitizePayload(JSON.parse(body)))
+  } catch {
+    return sanitizePayload(body)
+  }
+}
+
+const parseResponse = async <T>(response: Response): Promise<T> => {
+  if (response.status === 204) {
+    return undefined as T
+  }
+
+  const contentType = response.headers.get('Content-Type') ?? ''
+  const text = await response.text()
+  if (!text) {
+    return undefined as T
+  }
+
+  if (contentType.includes('application/json')) {
+    return JSON.parse(text) as T
+  }
+
+  return text as T
+}
+
 export const monitoredFetch = async <T = unknown>(input: string | URL, init: MonitoredRequestInit = {}): Promise<T> => {
   const url = resolveUrl(input)
   const method = init.method ?? 'GET'
   const key = requestKey(url, init)
+  const pathname = new URL(url, window.location.origin).pathname
 
-  if (!requestRateLimiter.consume(`${method}:${new URL(url, window.location.origin).pathname}`)) {
+  if (!requestRateLimiter.consume(`${method}:${pathname}`)) {
     throw new Error('Rate limit exceeded')
   }
 
@@ -49,17 +80,18 @@ export const monitoredFetch = async <T = unknown>(input: string | URL, init: Mon
       ...init,
       method,
       headers,
-      body: typeof init.body === 'string' ? JSON.stringify(sanitizePayload(JSON.parse(init.body))) : init.body,
+      body: prepareBody(init.body),
       credentials: 'include',
     })
     const durationMs = Math.round(performance.now() - startedAt)
-    logger.info('http_request', { url, method, status: response.status, durationMs })
+    logger.info('http_request', { path: pathname, method, status: response.status, durationMs })
 
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`)
+      const errorBody = await parseResponse<unknown>(response).catch(() => undefined)
+      throw new Error(`Request failed with status ${response.status}${errorBody ? `: ${JSON.stringify(errorBody)}` : ''}`)
     }
 
-    const data = (await response.json()) as T
+    const data = await parseResponse<T>(response)
     if (method === 'GET') {
       resourceCache.set(key, data)
     }

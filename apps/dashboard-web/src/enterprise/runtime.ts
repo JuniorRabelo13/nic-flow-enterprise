@@ -1,7 +1,15 @@
 import { logger } from './observability/logger'
 import { sentry } from './observability/sentry'
 
+let initialized = false
+
 export const initializeEnterpriseRuntime = () => {
+  if (initialized) {
+    return
+  }
+
+  initialized = true
+
   window.addEventListener('error', (event) => {
     sentry.captureException(event.error, { source: event.filename, line: event.lineno })
   })
