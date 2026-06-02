@@ -6,6 +6,7 @@ import { sanitizePayload } from '../security/sanitize'
 import { resourceCache } from '../performance/resourceCache'
 import { logger } from '../observability/logger'
 import { sentry } from '../observability/sentry'
+import { supabase } from '../../modules/whatsapp/services/supabase.client'
 
 type CachePolicy = 'network-only' | 'cache-first' | 'stale-while-revalidate'
 
@@ -51,6 +52,22 @@ const parseResponse = async <T>(response: Response): Promise<T> => {
   return text as T
 }
 
+const attachSupabaseAuthorization = async (headers: Headers) => {
+  if (headers.has('Authorization')) {
+    return
+  }
+
+  try {
+    const { data, error } = await supabase?.auth?.getSession?.() ?? { data: null, error: null }
+    const accessToken = data?.session?.access_token
+    if (!error && accessToken) {
+      headers.set('Authorization', `Bearer ${accessToken}`)
+    }
+  } catch {
+    // Public requests must continue even when Supabase is unavailable.
+  }
+}
+
 export const monitoredFetch = async <T = unknown>(input: string | URL, init: MonitoredRequestInit = {}): Promise<T> => {
   const url = resolveUrl(input)
   const method = init.method ?? 'GET'
@@ -73,6 +90,7 @@ export const monitoredFetch = async <T = unknown>(input: string | URL, init: Mon
   headers.set('X-CSRF-Token', getCsrfToken())
   headers.set('X-Session-Fingerprint', await getSessionFingerprint())
   headers.set('X-Request-Source', 'dashboard-web')
+  await attachSupabaseAuthorization(headers)
 
   const startedAt = performance.now()
   try {

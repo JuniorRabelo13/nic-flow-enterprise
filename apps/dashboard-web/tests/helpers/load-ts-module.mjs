@@ -6,7 +6,7 @@ import ts from 'typescript'
 
 const nodeRequire = createRequire(import.meta.url)
 
-export const loadTsModule = async (absolutePath, stubModules = {}) => {
+export const loadTsModule = async (absolutePath, stubModules = {}, contextOverrides = {}) => {
   const source = await fs.readFile(absolutePath, 'utf8')
   const transpiled = ts.transpileModule(source, {
     compilerOptions: {
@@ -41,6 +41,7 @@ export const loadTsModule = async (absolutePath, stubModules = {}) => {
     setInterval,
     clearInterval,
     crypto: globalThis.crypto,
+    ...contextOverrides,
   }
 
   vm.runInNewContext(transpiled.outputText, context, { filename: absolutePath })

@@ -40,22 +40,40 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
     setWorkspaceLoading(true)
     setError(null)
     try {
-      const [{ data: workspaceRows, error: workspaceError }, { data: memberRows, error: memberError }] = await Promise.all([
-        client.from('workspaces').select('id, name').order('name', { ascending: true }),
-        client.from('memberships').select('workspace_id, user_id, role').order('workspace_id', { ascending: true }),
-      ])
-
-      if (workspaceError) {
-        throw workspaceError
-      }
+      const { data: memberRows, error: memberError } = await client
+        .from('memberships')
+        .select('workspace_id, user_id, role')
+        .eq('user_id', session.user.id)
+        .order('workspace_id', { ascending: true })
 
       if (memberError) {
         throw memberError
       }
 
+      const nextMemberships = (memberRows ?? []) as WorkspaceMember[]
+      const workspaceIds = [...new Set(nextMemberships.map((membership) => membership.workspace_id).filter(Boolean))]
+
+      if (workspaceIds.length === 0) {
+        setWorkspaces([])
+        setMemberships(nextMemberships)
+        setActiveWorkspaceId(null)
+        localStorage.removeItem(activeWorkspaceStorageKey)
+        return
+      }
+
+      const { data: workspaceRows, error: workspaceError } = await client
+        .from('workspaces')
+        .select('id, name')
+        .in('id', workspaceIds)
+        .order('name', { ascending: true })
+
+      if (workspaceError) {
+        throw workspaceError
+      }
+
       const nextWorkspaces = (workspaceRows ?? []) as Workspace[]
       setWorkspaces(nextWorkspaces)
-      setMemberships((memberRows ?? []) as WorkspaceMember[])
+      setMemberships(nextMemberships)
 
       const storedWorkspace = localStorage.getItem(activeWorkspaceStorageKey)
       const nextActiveWorkspace = nextWorkspaces.find((workspace) => workspace.id === storedWorkspace) ?? nextWorkspaces[0] ?? null
