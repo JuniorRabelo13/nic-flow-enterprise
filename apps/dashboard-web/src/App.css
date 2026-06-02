@@ -123,6 +123,14 @@
   color: #7dd3fc;
 }
 
+.app-auth-build-marker {
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 .app-inline-error {
   border: 1px solid rgba(251, 113, 133, 0.42);
   border-radius: 8px;

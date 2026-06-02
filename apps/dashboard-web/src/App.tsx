@@ -189,6 +189,7 @@ const LoginScreen = () => {
         <button className="app-secondary-action" type="button" onClick={() => setMode(mode === 'sign-in' ? 'sign-up' : 'sign-in')}>
           {mode === 'sign-in' ? 'Criar novo acesso' : 'Já tenho acesso'}
         </button>
+        <small className="app-auth-build-marker">BUILD AUTH FIX cbe3817</small>
       </section>
     </main>
   )
