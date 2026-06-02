@@ -8,13 +8,13 @@ interface ImportMetaEnv {
   readonly VITE_SENTRY_SAMPLE_RATE?: string
   readonly VITE_STRIPE_PUBLISHABLE_KEY?: string
   readonly VITE_EVOLUTION_API_BASE_URL?: string
-  readonly VITE_EVOLUTION_API_KEY?: string
-  readonly VITE_EVOLUTION_API_URL?: string
+  readonly VITE_FEATURE_WHATSAPP_EDGE_SESSION?: string
   readonly VITE_META_APP_ID?: string
   readonly VITE_META_APP_SECRET?: string
   readonly VITE_META_VERIFY_TOKEN?: string
   readonly VITE_SUPABASE_URL?: string
   readonly VITE_SUPABASE_ANON_KEY?: string
+  readonly VITE_SUPABASE_PUBLISHABLE_KEY?: string
 }
 
 interface ImportMeta {

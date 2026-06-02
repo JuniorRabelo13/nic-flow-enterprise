@@ -1,17 +1,14 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { type Session } from '@supabase/supabase-js'
-import { hasSupabaseConfig, supabase } from '../whatsapp/services/supabase.client'
+import {
+  getSupabaseAuthErrorMessage,
+  hasSupabaseConfig,
+  requireSupabaseAuth,
+  supabasePreviewConfigErrorMessage,
+} from '../whatsapp/services/supabase.client'
 import { AuthWorkspaceContext, type AuthWorkspaceContextValue, type Workspace, type WorkspaceMember } from './authWorkspaceContext'
 
 const activeWorkspaceStorageKey = 'nic.activeWorkspaceId'
-
-const requireSupabase = () => {
-  if (!supabase) {
-    throw new Error('Supabase is not configured')
-  }
-
-  return supabase
-}
 
 export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => {
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(() => localStorage.getItem(activeWorkspaceStorageKey))
@@ -39,13 +36,13 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
       return
     }
 
-    const client = requireSupabase()
+    const client = requireSupabaseAuth()
     setWorkspaceLoading(true)
     setError(null)
     try {
       const [{ data: workspaceRows, error: workspaceError }, { data: memberRows, error: memberError }] = await Promise.all([
-        client.from('workspaces').select('id, name, created_by, created_at, updated_at').order('created_at', { ascending: true }),
-        client.from('workspace_members').select('workspace_id, user_id, role, created_at, updated_at').order('created_at', { ascending: true }),
+        client.from('workspaces').select('id, name').order('name', { ascending: true }),
+        client.from('memberships').select('workspace_id, user_id, role').order('workspace_id', { ascending: true }),
       ])
 
       if (workspaceError) {
@@ -78,14 +75,18 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
   }, [selectWorkspace, session])
 
   useEffect(() => {
-    if (!supabase) {
+    let client: ReturnType<typeof requireSupabaseAuth>
+    try {
+      client = requireSupabaseAuth()
+    } catch {
+      setError(supabasePreviewConfigErrorMessage)
       setAuthLoading(false)
       setAuthReady(true)
       return
     }
 
     let mounted = true
-    void supabase.auth.getSession().then(({ data, error: sessionError }) => {
+    void client.auth.getSession().then(({ data, error: sessionError }) => {
       if (!mounted) {
         return
       }
@@ -99,7 +100,7 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
       setAuthReady(true)
     })
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: subscription } = client.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession)
       setAuthReady(true)
     })
@@ -119,32 +120,53 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
   }, [authReady, refreshWorkspaces])
 
   const signInWithPassword = useCallback(async (email: string, password: string) => {
-    const client = requireSupabase()
     setError(null)
-    const { error: signInError } = await client.auth.signInWithPassword({ email: email.trim(), password })
-    if (signInError) {
-      setError(signInError.message)
-      throw signInError
+    try {
+      const client = requireSupabaseAuth()
+      const { error: signInError } = await client.auth.signInWithPassword({ email: email.trim(), password })
+      if (signInError) {
+        setError(signInError.message)
+        throw signInError
+      }
+    } catch (caughtError) {
+      const fallback = caughtError instanceof Error ? caughtError.message : 'Não foi possível autenticar.'
+      const message = getSupabaseAuthErrorMessage(caughtError, fallback)
+      setError(message)
+      throw new Error(message)
     }
   }, [])
 
   const signUpWithPassword = useCallback(async (email: string, password: string) => {
-    const client = requireSupabase()
     setError(null)
-    const { error: signUpError } = await client.auth.signUp({ email: email.trim(), password })
-    if (signUpError) {
-      setError(signUpError.message)
-      throw signUpError
+    try {
+      const client = requireSupabaseAuth()
+      const { error: signUpError } = await client.auth.signUp({ email: email.trim(), password })
+      if (signUpError) {
+        setError(signUpError.message)
+        throw signUpError
+      }
+    } catch (caughtError) {
+      const fallback = caughtError instanceof Error ? caughtError.message : 'Não foi possível autenticar.'
+      const message = getSupabaseAuthErrorMessage(caughtError, fallback)
+      setError(message)
+      throw new Error(message)
     }
   }, [])
 
   const signOut = useCallback(async () => {
-    const client = requireSupabase()
     setError(null)
-    const { error: signOutError } = await client.auth.signOut()
-    if (signOutError) {
-      setError(signOutError.message)
-      throw signOutError
+    try {
+      const client = requireSupabaseAuth()
+      const { error: signOutError } = await client.auth.signOut()
+      if (signOutError) {
+        setError(signOutError.message)
+        throw signOutError
+      }
+    } catch (caughtError) {
+      const fallback = caughtError instanceof Error ? caughtError.message : 'Não foi possível sair.'
+      const message = getSupabaseAuthErrorMessage(caughtError, fallback)
+      setError(message)
+      throw new Error(message)
     }
 
     setWorkspaces([])
@@ -154,23 +176,30 @@ export const AuthWorkspaceProvider = ({ children }: { children: ReactNode }) => 
   }, [])
 
   const createWorkspace = useCallback(async (name: string) => {
-    const client = requireSupabase()
     const workspaceName = name.trim()
     if (!workspaceName) {
       throw new Error('Informe o nome do workspace.')
     }
 
     setError(null)
-    const { data, error: createError } = await client.rpc('create_workspace', { workspace_name: workspaceName })
-    if (createError) {
-      setError(createError.message)
-      throw createError
-    }
+    try {
+      const client = requireSupabaseAuth()
+      const { data, error: createError } = await client.rpc('create_workspace', { workspace_name: workspaceName })
+      if (createError) {
+        setError(createError.message)
+        throw createError
+      }
 
-    const createdWorkspace = data as Workspace
-    await refreshWorkspaces()
-    selectWorkspace(createdWorkspace.id)
-    return createdWorkspace
+      const createdWorkspace = data as Workspace
+      await refreshWorkspaces()
+      selectWorkspace(createdWorkspace.id)
+      return createdWorkspace
+    } catch (caughtError) {
+      const fallback = caughtError instanceof Error ? caughtError.message : 'Não foi possível criar o workspace.'
+      const message = getSupabaseAuthErrorMessage(caughtError, fallback)
+      setError(message)
+      throw new Error(message)
+    }
   }, [refreshWorkspaces, selectWorkspace])
 
   const activeWorkspace = useMemo(

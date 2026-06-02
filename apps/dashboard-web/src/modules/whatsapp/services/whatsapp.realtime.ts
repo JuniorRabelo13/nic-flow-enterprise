@@ -14,12 +14,12 @@ export const subscribeToWhatsAppConnections = (
 
   const client = supabase
   const channel = client
-    .channel(`whatsapp_connections:${workspaceId}`)
+    .channel(`whatsapp_sessions:${workspaceId}`)
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'whatsapp_connections', filter: `workspace_id=eq.${workspaceId}` },
+      { event: '*', schema: 'public', table: 'whatsapp_sessions', filter: `workspace_id=eq.${workspaceId}` },
       (payload) => {
-        onLog?.(`whatsapp_connection_${payload.eventType.toLowerCase()}`)
+        onLog?.(`whatsapp_session_${payload.eventType.toLowerCase()}`)
         if (payload.new) {
           onConnectionChange(payload.new as WhatsAppConnection)
         }

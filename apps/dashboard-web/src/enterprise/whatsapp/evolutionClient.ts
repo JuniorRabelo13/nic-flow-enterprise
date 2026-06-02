@@ -21,15 +21,10 @@ const evolutionUrl = (path: string) => {
   return `${enterpriseEnv.evolutionApiBaseUrl}${path}`
 }
 
-const authHeaders = () => ({
-  apikey: enterpriseEnv.evolutionApiKey ?? '',
-})
-
 export const evolutionClient = {
   createSession(workspaceId: string, sessionId: string) {
     return monitoredFetch<WhatsAppSession>(evolutionUrl('/instance/create'), {
       method: 'POST',
-      headers: authHeaders(),
       body: JSON.stringify({ instanceName: sessionId, workspaceId }),
       cachePolicy: 'network-only',
     })
@@ -37,14 +32,12 @@ export const evolutionClient = {
   getQrCode(sessionId: string) {
     return monitoredFetch<QrLifecycle>(evolutionUrl(`/instance/connect/${sessionId}`), {
       method: 'GET',
-      headers: authHeaders(),
       cachePolicy: 'network-only',
     })
   },
   reconnect(sessionId: string) {
     return monitoredFetch<WhatsAppSession>(evolutionUrl(`/instance/restart/${sessionId}`), {
       method: 'PUT',
-      headers: authHeaders(),
       cachePolicy: 'network-only',
       retry: 3,
     })
@@ -52,7 +45,6 @@ export const evolutionClient = {
   syncWebhook(sessionId: string, webhookUrl: string) {
     return monitoredFetch(evolutionUrl(`/webhook/set/${sessionId}`), {
       method: 'POST',
-      headers: authHeaders(),
       body: JSON.stringify({ url: webhookUrl, webhook_by_events: true }),
       cachePolicy: 'network-only',
     })

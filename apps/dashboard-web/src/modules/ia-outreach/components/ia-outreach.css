@@ -1,0 +1,684 @@
+.ia-outreach-page {
+  min-height: 100%;
+  background: #070a12;
+  color: #f8fafc;
+}
+
+.ia-outreach-shell {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.ia-outreach-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ia-outreach-header span {
+  color: #38bdf8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ia-outreach-header h1 {
+  margin: 8px 0;
+  font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.ia-outreach-header p {
+  max-width: 860px;
+  color: #a7b0c0;
+  margin: 0;
+}
+
+.ia-outreach-header strong {
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 8px;
+  color: #7dd3fc;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 8px 10px;
+}
+
+.ia-outreach-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ia-outreach-kpis article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #0d1320;
+  padding: 14px;
+}
+
+.ia-outreach-kpis h2,
+.ia-outreach-kpis h3 {
+  margin: 0;
+  color: #a7b0c0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ia-outreach-kpis strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.ia-outreach-panel {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #0d1320;
+  padding: 16px;
+}
+
+.ia-outreach-panel-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ia-outreach-panel-title span {
+  color: #38bdf8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ia-outreach-panel-title h2 {
+  margin: 6px 0 0;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.ia-outreach-panel-title button,
+.ia-outreach-account-card button,
+.ia-outreach-queue-card button,
+.ia-outreach-form button,
+.ia-outreach-modal-actions button {
+  border: 0;
+  border-radius: 8px;
+  background: #38bdf8;
+  color: #07111f;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 12px;
+}
+
+.ia-outreach-panel-title button:disabled,
+.ia-outreach-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ia-outreach-account-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ia-outreach-account-card {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  padding: 12px;
+}
+
+.ia-outreach-account-card h3 {
+  margin: 8px 0 4px;
+  font-size: 1rem;
+}
+
+.ia-outreach-account-card p {
+  color: #9aa7bb;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  margin: 4px 0;
+}
+
+.ia-outreach-status {
+  display: inline-block;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 999px;
+  color: #86efac;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  text-transform: uppercase;
+}
+
+.ia-outreach-status.paused,
+.ia-outreach-status.risk,
+.ia-outreach-status.blocked,
+.ia-outreach-status.disconnected {
+  border-color: rgba(251, 113, 133, 0.4);
+  color: #fecdd3;
+}
+
+.ia-outreach-status.draft {
+  border-color: rgba(250, 204, 21, 0.4);
+  color: #fde68a;
+}
+
+.ia-outreach-status.empty {
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #cbd5e1;
+}
+
+.ia-outreach-account-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ia-outreach-notice {
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  color: #bae6fd;
+  font-size: 0.86rem;
+  margin: 14px 0;
+  padding: 12px;
+}
+
+.ia-outreach-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ia-outreach-form label,
+.ia-outreach-form fieldset {
+  display: grid;
+  gap: 6px;
+  color: #cbd5e1;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.ia-outreach-form .full {
+  grid-column: 1 / -1;
+}
+
+.ia-outreach-form input,
+.ia-outreach-form textarea {
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  background: #070a12;
+  color: #f8fafc;
+  padding: 10px 12px;
+}
+
+.ia-outreach-day-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ia-outreach-day {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  background: #090e18;
+  color: #cbd5e1;
+  padding: 8px;
+}
+
+.ia-outreach-account-pick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ia-outreach-account-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  background: #090e18;
+  color: #cbd5e1;
+  padding: 8px;
+}
+
+.ia-outreach-campaign-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ia-outreach-campaign-list article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  padding: 10px 12px;
+}
+
+.ia-outreach-campaign-list span {
+  color: #38bdf8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ia-outreach-campaign-list h3 {
+  margin: 8px 0 4px;
+  font-size: 1rem;
+}
+
+.ia-outreach-campaign-list p {
+  color: #9aa7bb;
+  margin: 0;
+}
+
+.ia-outreach-campaign-list button {
+  border: 0;
+  border-radius: 8px;
+  background: #38bdf8;
+  color: #07111f;
+  cursor: pointer;
+  font-weight: 800;
+  margin-top: 8px;
+  padding: 8px 10px;
+}
+
+.ia-outreach-execution-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ia-outreach-execution-card {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #070a12;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.ia-outreach-execution-card h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.ia-outreach-execution-card p {
+  color: #bfd0e6;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.ia-outreach-execution-variants {
+  display: grid;
+  gap: 6px;
+}
+
+.ia-outreach-execution-variants article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  padding: 8px 10px;
+}
+
+.ia-outreach-execution-variants strong {
+  color: #bae6fd;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.ia-outreach-execution-variants p {
+  color: #dbeafe;
+  margin-top: 6px;
+}
+
+.ia-outreach-execution-queue-actions {
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.ia-outreach-execution-queue-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ia-outreach-execution-queue-buttons button {
+  border: 0;
+  border-radius: 8px;
+  background: #38bdf8;
+  color: #07111f;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 8px 10px;
+}
+
+.ia-outreach-execution-queue-summary {
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.08);
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px;
+}
+
+.ia-outreach-execution-queue-summary p {
+  color: #dbeafe !important;
+  font-size: 0.8rem !important;
+  margin: 0 !important;
+}
+
+.ia-outreach-execution-queue-preview {
+  display: grid;
+  gap: 6px;
+}
+
+.ia-outreach-execution-queue-preview article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  padding: 8px 10px;
+}
+
+.ia-outreach-execution-queue-preview strong {
+  color: #f8fafc;
+  display: block;
+  font-size: 0.82rem;
+}
+
+.ia-outreach-execution-queue-preview p {
+  color: #cbd5e1 !important;
+  font-size: 0.8rem !important;
+  margin-top: 4px !important;
+}
+
+.ia-outreach-recipients-section {
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.ia-outreach-recipients-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ia-outreach-recipients-header h5 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.ia-outreach-recipients-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ia-outreach-recipients-actions button,
+.ia-outreach-recipient-form button,
+.ia-outreach-recipient-import button {
+  border: 0;
+  border-radius: 8px;
+  background: #38bdf8;
+  color: #07111f;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 8px 10px;
+}
+
+.ia-outreach-recipients-isolation {
+  color: #bae6fd !important;
+  font-size: 0.8rem !important;
+}
+
+.ia-outreach-recipient-form,
+.ia-outreach-recipient-import {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.ia-outreach-recipient-form label {
+  color: #cbd5e1;
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 700;
+  gap: 6px;
+}
+
+.ia-outreach-recipient-form input,
+.ia-outreach-recipient-import textarea {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  background: #070a12;
+  color: #f8fafc;
+  padding: 8px 10px;
+}
+
+.ia-outreach-recipient-import p {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.ia-outreach-recipient-import-summary {
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.08);
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px;
+}
+
+.ia-outreach-recipient-import-summary p {
+  color: #dbeafe;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.ia-outreach-recipient-list {
+  display: grid;
+  gap: 6px;
+}
+
+.ia-outreach-recipient-list article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  padding: 8px 10px;
+}
+
+.ia-outreach-recipient-list strong {
+  color: #f8fafc;
+  display: block;
+  font-size: 0.82rem;
+}
+
+.ia-outreach-recipient-list p {
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.ia-outreach-queue-kpis {
+  margin-top: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ia-outreach-queue-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.ia-outreach-queue-card {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+}
+
+.ia-outreach-queue-card h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.ia-outreach-queue-card p {
+  color: #9aa7bb;
+  font-size: 0.83rem;
+  margin: 0;
+}
+
+.ia-outreach-queue-card button {
+  margin-top: 8px;
+}
+
+.ia-outreach-variant-list,
+.ia-outreach-log-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ia-outreach-variant-list article,
+.ia-outreach-log-list article {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #090e18;
+  color: #dbeafe;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  padding: 10px 12px;
+}
+
+.ia-outreach-list {
+  color: #cbd5e1;
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 16px;
+}
+
+.ia-outreach-feedback {
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #bae6fd;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 12px;
+}
+
+.ia-outreach-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 6, 23, 0.74);
+  padding: 16px;
+}
+
+.ia-outreach-modal-content {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background: #0d1320;
+  color: #f8fafc;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  width: min(460px, 100%);
+}
+
+.ia-outreach-modal-content h2 {
+  margin: 0;
+}
+
+.ia-outreach-modal-content p {
+  color: #a7b0c0;
+  margin: 0;
+}
+
+.ia-outreach-modal-content label {
+  color: #cbd5e1;
+  display: grid;
+  font-size: 0.86rem;
+  font-weight: 700;
+  gap: 6px;
+}
+
+.ia-outreach-modal-content input {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  background: #070a12;
+  color: #f8fafc;
+  padding: 10px 12px;
+}
+
+.ia-outreach-modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ia-outreach-modal-actions button[type='button'] {
+  background: #0f172a;
+  color: #dbeafe;
+}
+
+@media (max-width: 1240px) {
+  .ia-outreach-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ia-outreach-account-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ia-outreach-form {
+    grid-template-columns: 1fr;
+  }
+
+  .ia-outreach-queue-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .ia-outreach-header {
+    flex-direction: column;
+  }
+
+  .ia-outreach-kpis,
+  .ia-outreach-account-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ia-outreach-recipients-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

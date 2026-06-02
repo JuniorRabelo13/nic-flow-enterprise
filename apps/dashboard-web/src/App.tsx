@@ -1,10 +1,14 @@
 import { type FormEvent, type ReactNode, useEffect, useState } from 'react'
 import './App.css'
 import { AuthWorkspaceProvider, useAuthWorkspace } from './modules/auth-workspace'
+import { IaOutreachPage } from './modules/ia-outreach'
 import { WhatsAppConnectionsPage } from './modules/whatsapp/components/WhatsAppConnectionsPage'
+import { getSupabaseAuthErrorMessage, supabasePreviewConfigErrorMessage } from './modules/whatsapp/services/supabase.client'
 
 const routes = {
   home: '/',
+  iaOutreach: '/ia-outreach',
+  iaSdr: '/ia-sdr',
   whatsappConnections: '/whatsapp/connections',
 } as const
 
@@ -35,6 +39,14 @@ const AppRoutes = () => {
     )
   }
 
+  if (path === routes.iaOutreach || path === routes.iaSdr) {
+    return (
+      <ProtectedRoute>
+        <WorkspaceIaOutreachPage isLegacySdrRoute={path === routes.iaSdr} />
+      </ProtectedRoute>
+    )
+  }
+
   return (
     <ProtectedRoute>
       <HomePage />
@@ -50,6 +62,22 @@ const WorkspaceWhatsAppConnectionsPage = () => {
   }
 
   return <WhatsAppConnectionsPage workspaceId={activeWorkspace.id} workspaceName={activeWorkspace.name} />
+}
+
+const WorkspaceIaOutreachPage = ({ isLegacySdrRoute }: { isLegacySdrRoute: boolean }) => {
+  const { activeWorkspace } = useAuthWorkspace()
+
+  if (!activeWorkspace) {
+    return null
+  }
+
+  return (
+    <IaOutreachPage
+      workspaceId={activeWorkspace.id}
+      workspaceName={activeWorkspace.name}
+      isLegacySdrRoute={isLegacySdrRoute}
+    />
+  )
 }
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
@@ -74,7 +102,10 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <WorkspaceTopbar />
-      {children}
+      <div className="app-authenticated-layout">
+        <WorkspaceSidebar />
+        <div className="app-authenticated-content">{children}</div>
+      </div>
     </>
   )
 }
@@ -93,11 +124,24 @@ const HomePage = () => {
 
         <nav className="app-route-list" aria-label="Módulos principais">
           <a href={routes.whatsappConnections}>WhatsApp Connections</a>
+          <a href={routes.iaOutreach}>Prospecção IA</a>
         </nav>
       </section>
     </main>
   )
 }
+
+const WorkspaceSidebar = () => (
+  <aside className="app-sidebar" aria-label="Menu lateral">
+    <h2>Operação</h2>
+    <nav>
+      <a href={routes.home}>Início</a>
+      <a href={routes.whatsappConnections}>WhatsApp Sessions</a>
+      <a href={routes.iaOutreach}>Prospecção IA</a>
+      <a href={routes.iaSdr}>IA SDR</a>
+    </nav>
+  </aside>
+)
 
 const LoginScreen = () => {
   const { error, signInWithPassword, signUpWithPassword } = useAuthWorkspace()
@@ -118,7 +162,8 @@ const LoginScreen = () => {
         await signUpWithPassword(email, password)
       }
     } catch (caughtError) {
-      setFormError(caughtError instanceof Error ? caughtError.message : 'Não foi possível autenticar.')
+      const fallback = caughtError instanceof Error ? caughtError.message : 'Não foi possível autenticar.'
+      setFormError(getSupabaseAuthErrorMessage(caughtError, fallback))
     } finally {
       setSubmitting(false)
     }
@@ -205,7 +250,7 @@ const WorkspaceTopbar = () => {
 }
 
 const SupabaseConfigScreen = () => (
-  <AppStatusScreen message="Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY para habilitar autenticação." />
+  <AppStatusScreen message={supabasePreviewConfigErrorMessage} />
 )
 
 const AppStatusScreen = ({ message }: { message: string }) => (
